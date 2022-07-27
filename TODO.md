@@ -1,3 +1,5 @@
+# TODO
+
 - Replace input() with command line arguments
 - Add progress bar
 - Make it faster
