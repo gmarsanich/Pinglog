@@ -15,16 +15,30 @@ target = pargs["target"]
 n = pargs["n"]
 
 
-# Creating logfile name
+# Ping function
 
-logfile = f"pinglog_{target}_{time.time()}.log"
+
+def ping(t: str, n: int) -> None:
+    logfile = f"pinglog_{t}_{time.time()}.log"
+    os.system(f"ping -n {n} {t} > {logfile}")
+    os.system(
+        f"powershell.exe New-BurntToastNotification -Text 'Done!', 'Saved to {os.getcwd()}\\{logfile}' -AppLogo img\\PowerShell_Core_6.0_icon.png"
+    )
+    print(f"Saved log to file {logfile} in {os.getcwd()}")
+
 
 # Running command
 
 with alive_bar(title=f"Pinging {target} {n} times") as bar:
-    os.system(f"ping -n {n} {target} > {logfile}")
-    os.system(
-        f"powershell.exe New-BurntToastNotification -Text 'Done!', 'Saved to {os.getcwd()}\\{logfile}' -AppLogo img\\PowerShell_Core_6.0_icon.png"
-    )
-    bar()
-print(f"Saved log to file {logfile} in {os.getcwd()}")
+    if target.endswith(".txt"):
+        file = open(target, "r")
+        content = file.readlines()
+        file.close()
+        target = [s.strip() for s in content]
+        print(target)
+        for t in target:
+            ping(t, n)
+        bar()
+    else:
+        ping(target, n)
+        bar()
